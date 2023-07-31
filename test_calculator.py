@@ -75,10 +75,9 @@ class TestAppium(unittest.TestCase):
 
 def get_options():
     parser = OptionParser()
-    parser.add_option("--test_four_add_eight", action="store_true", dest="test_four_add_eight", default=False)
-    parser.add_option("--test_nine_div_three", action="store_true", dest="test_nine_div_three", default=False)
-    parser.add_option("--test_zero_div", action="store_true", dest="test_zero_div", default=False)
-    parser.add_option("--test_root_from_negative", action="store_true", dest="test_root_from_negative", default=False)
+
+    parser.add_option("-d", "--device_name", dest="device_name", default=None)
+    parser.add_option("-t", "--test_case", dest="test_cases", action='append', default=[])
 
     (options, _) = parser.parse_args()
 
@@ -88,14 +87,20 @@ def get_options():
 def form_suite(options):
     suite = unittest.TestSuite()
 
-    if options.test_four_add_eight:
-        suite.addTest(TestAppium('test_four_add_eight'))
-    if options.test_nine_div_three:
-        suite.addTest(TestAppium('test_nine_div_three'))
-    if options.test_zero_div:
-        suite.addTest(TestAppium('test_zero_div'))
-    if options.test_root_from_negative:
-        suite.addTest(TestAppium('test_root_from_negative'))
+    test_cases = [
+        TestAppium('test_four_add_eight'),
+        TestAppium('test_nine_div_three'),
+        TestAppium('test_zero_div'),
+        TestAppium('test_root_from_negative')
+    ]
+
+    if options.device_name:
+        capabilities["udid"] = options.device_name
+    if not len(options.test_cases):
+        suite.addTests(test_cases)
+        return suite
+    for i in options.test_cases:
+        suite.addTest(test_cases[int(i) - 1])
 
     return suite
 
