@@ -159,4 +159,5 @@ def form_suite(options):
 
 if __name__ == '__main__':
     suite = form_suite(get_options())
-    unittest.TextTestRunner().run(suite)
+    result = unittest.TextTestRunner().run(suite)
+    quit(len(result.errors) + len(result.failures))
